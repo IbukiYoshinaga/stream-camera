@@ -6,7 +6,6 @@ import threading
 from flask import Flask, render_template, Response
 
 from controllers.camera_stream_controller import *
-
 from modules.camera_module import *
 
 dotenv_path = join(dirname(__file__), ".env")

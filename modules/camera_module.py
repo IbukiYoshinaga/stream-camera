@@ -34,7 +34,7 @@ class VideoCameraModule:
             if move_object > min_distance:
                 cv2.imwrite("move_object.jpg", frame_delta)
 
-            cv2.imwrite("record.jpg", frame_delta)
+            cv2.imwrite("record.jpg", image)
             ret, jpeg = cv2.imencode(".jpg", image)
             self.jpeg = jpeg.tobytes()
 
