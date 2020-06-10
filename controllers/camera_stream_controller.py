@@ -1,18 +1,15 @@
 from flask import Flask, render_template, Response
 
-from modules.camera_module import VideoCameraModule
+import threading
 
-class CameraController:
-    def __init__(self):
-        self.camera = VideoCameraModule()
-
-    def generate_frame(self):
+class CameraController():
+    def generate_frame(self, camera):
         while True:
-            frame = self.camera.get_frame()
+            frame =camera.get_jpeg()
             yield (b"--frame\r\n" b"Content-Type: image/jpeg\r\n\r\n" + frame + b"\r\n\r\n")
 
-    def get_camera_stream(self):
+    def get_camera_stream(self, camera):
         return Response(
-            self.generate_frame(),
+            self.generate_frame(camera),
             mimetype="multipart/x-mixed-replace; boundary=frame",
         )

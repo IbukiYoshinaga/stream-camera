@@ -2,6 +2,8 @@
 import cv2
 from os.path import join, dirname
 
+import threading
+
 # カメラ設定
 class VideoCameraModule:
     def __init__(self):
@@ -11,7 +13,11 @@ class VideoCameraModule:
         self.video.release()
 
     def get_frame(self):
-        success, image = self.video.read()
-        ret, jpeg = cv2.imencode(".jpg", image)
-        #cv2.imwrite("test.jpg", jpeg)
-        return jpeg.tobytes()
+        while True:
+            success, image = self.video.read()
+            ret, jpeg = cv2.imencode(".jpg", image)
+            self.jpeg = jpeg.tobytes()
+            cv2.imwrite("test.jpg", image)
+
+    def get_jpeg(self):
+        return self.jpeg
