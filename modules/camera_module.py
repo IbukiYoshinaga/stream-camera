@@ -13,11 +13,30 @@ class VideoCameraModule:
         self.video.release()
 
     def get_frame(self):
+        average = None
+        threshold = 30
+        min_distance = 1000
         while True:
             success, image = self.video.read()
+            image = cv2.medianBlur(image, 5)
+            gray_scale = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+            if average is None:
+                average = gray_scale.copy().astype("float")
+                continue
+            cv2.accumulateWeighted(gray_scale, average, 0.6)
+
+            frame_delta = cv2.absdiff(gray_scale, cv2.convertScaleAbs(average))
+            frame_delta[frame_delta < threshold] = 0
+            frame_delta[frame_delta >= threshold] = 255
+
+            move_object = cv2.countNonZero(frame_delta)
+
+            if move_object > min_distance:
+                cv2.imwrite("move_object.jpg", frame_delta)
+
+            cv2.imwrite("record.jpg", frame_delta)
             ret, jpeg = cv2.imencode(".jpg", image)
             self.jpeg = jpeg.tobytes()
-            cv2.imwrite("test.jpg", image)
 
     def get_jpeg(self):
         return self.jpeg

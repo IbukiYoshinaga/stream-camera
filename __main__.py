@@ -3,21 +3,22 @@ import os
 from os.path import join, dirname
 import uuid
 import threading
-
 from flask import Flask, render_template, Response
 
 from controllers.camera_stream_controller import *
+
 from modules.camera_module import *
 
-dotenv_path = join(dirname(__file__), '.env')
+dotenv_path = join(dirname(__file__), ".env")
 
 app = Flask(__name__)
 
 camera = VideoCameraModule()
 
-class CameraInit():
+
+class CameraInit:
     def __init__(self):
-        #device_keyに関する初期設定
+        # device_keyに関する初期設定
         load_dotenv(dotenv_path)
         camera_thread = threading.Thread(target=camera.get_frame)
         camera_thread.start()
